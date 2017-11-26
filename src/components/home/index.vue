@@ -1,6 +1,6 @@
 <template>
     <div class="home-wrap">
-        <!-- <el-row class="mar-bottom10">
+        <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
                 <h1 class="my-info-title mar-bottom15">我的个人信息</h1>
                 <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
@@ -38,9 +38,9 @@
                         <div class="">会议列表</div>
                         <el-table :data="tableData" style="width: 100%">
                             <el-table-column type="index" width="50"></el-table-column>
-                            <el-table-column prop="date" label="会议名称" width=""></el-table-column>
-                            <el-table-column prop="name" label="会议状态" width="100"></el-table-column>
-                            <el-table-column prop="address" label="运行" width="180">
+                            <el-table-column prop="name" label="会议名称" width=""></el-table-column>
+                            <el-table-column prop="status" label="会议状态" width="100"></el-table-column>
+                            <el-table-column label="运行" width="180">
                                 <template slot-scope="scope">
                                     <el-dropdown trigger="click">
                                         <el-button type="primary">操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
@@ -55,42 +55,47 @@
                     </el-tab-pane>
                 </el-tabs>
             </el-col>
-        </el-row> -->
+        </el-row>
+        <el-row class="mar-bottom10">
+            <el-col :span="24" class="el-item pdd-10">
+                <h1>日历</h1>
+                <datepicker :inline="true" :value="newDate" calendar-class="datepicker-cont"></datepicker>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker'
 import '@/static/style/home/index.scss'
 export default {
     data () {
         return {
-            // activeName: 'meeting',
-            // form: {
-            //     a: '',
-            //     b: 0,
-            //     c: '',
-            //     d: '',
-            //     e: '',
-            //     f: ''
-            // },
-            // tableData: [
-            //     {
-            //         date: '2016-05-02',
-            //         name: '王小虎',
-            //         address: '上海市普陀区金沙江路 1518 弄'
-            //     },
-            //     {
-            //         date: '2016-05-04',
-            //         name: '王小虎',
-            //         address: '上海市普陀区金沙江路 1517 弄'
-            //     }
-            // ]
+            activeName: 'info',
+            form: {
+                a: '',
+                b: 0,
+                c: '',
+                d: '',
+                e: '',
+                f: ''
+            },
+            tableData: [
+                {
+                    name: '	关于xxx的大会1',
+                    status: '未开会'
+                }
+            ],
+            newDate: new Date()
         }
     },
     methods: {
         handleClick(val) {
 
         }
+    },
+    components: {
+        Datepicker
     }
 }
 </script>

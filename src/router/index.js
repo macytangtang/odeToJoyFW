@@ -1,24 +1,62 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import home from '@/components/home'
+import userMana from '@/components/baseSetting/userMana.vue'
+import systemEmail from '@/components/baseSetting/systemEmail.vue'
+import serviceMana from '@/components/baseSetting/serviceMana.vue'
+import meetingroomSetting from '@/components/meeting/meetingroomSetting.vue'
+import seatSetting from '@/components/meeting/seatSetting.vue'
+import addMeeting from '@/components/meeting/addMeeting.vue'
+import nowMeeting from '@/components/meeting/nowMeeting.vue'
+import endMeeting from '@/components/meeting/endMeeting.vue'
 
 Vue.use(VueRouter)
 
-// export default new VueRouter({
-//     routes: [
-//         {
-//             path: '/',
-//             name: 'HelloWorld',
-//             component: HelloWorld
-//         }
-//     ]
-// })
-
 const routes = [
     {
-        path: '/',
         name: 'home',
+        path: '/',
         component: home
+    },
+    {
+        name: 'userMana',
+        path: '/userMana',
+        component: userMana
+    },
+    {
+        name: 'systemEmail',
+        path: '/systemEmail',
+        component: systemEmail
+    },
+    {
+        name: 'serviceMana',
+        path: '/serviceMana',
+        component: serviceMana
+    },
+    {
+        name: 'meetingroomSetting',
+        path: '/meetingroomSetting',
+        component: meetingroomSetting
+    },
+    {
+        name: 'seatSetting',
+        path: '/seatSetting',
+        component: seatSetting
+    },
+    {
+        name: 'addMeeting',
+        path: '/addMeeting',
+        component: addMeeting
+    },
+    {
+        name: 'nowMeeting',
+        path: '/nowMeeting',
+        component: nowMeeting
+    },
+    {
+        name: 'endMeeting',
+        path: '/endMeeting',
+        component: endMeeting
     }
 ]
 
