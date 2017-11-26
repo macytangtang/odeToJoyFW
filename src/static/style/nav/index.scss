@@ -1,0 +1,92 @@
+.aside-wrap {
+    height: 100%;
+    .el-menu {
+        height: 100%;
+    }
+}
+
+.header-wrap {
+    position: relative;
+    height: 80px;
+    background-color: #fff;
+    .toggle-aside {
+        width: 80px;
+        height: 80px;
+        color: #646464;
+        vertical-align: top;
+    }
+    .header-logo {
+        display: inline-block;
+        width: 230px;
+        height: 80px;
+        background-color: #5659B9;
+        text-align: center;
+        h1 {
+            color: #fff;
+            height: 50px;
+            line-height: 65px;
+        }
+        p {
+            color: #fff;
+            font-size: 12px;
+            letter-spacing: 8px;
+            height: 30px;
+            line-height: 18px;
+        }
+    }
+    .toolbar-features {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        .el-dropdown-link {
+            height: 80px;
+            line-height: 80px;
+            color: #fff;
+            .features-head {
+                width: 50px;
+                height: 50px;
+                border-radius: 30px;
+                margin-top: 15px;
+                vertical-align: top;
+            }
+            .features-name {
+                display: inline-block;
+                min-width: 50px;
+                max-width: 170px;
+                padding-left: 7px;
+                h1 {
+                    color: #D85C6C;
+                    height: 45px;
+                    line-height: 65px;
+                    font-size: 18px;
+                }
+                p {
+                    color: #000;
+                    font-style: oblique;
+                    font-size: 13px;
+                    height: 35px;
+                    line-height: 18px;
+                }
+            }
+            .features-icon {
+                font-size: 1.5em;
+                vertical-align: top;
+                height: 80px;
+                line-height: 80px;
+                color: #000;
+            }
+            //
+        }
+    }
+}
+
+.el-footer {
+    padding: 0!important;
+    background-color: #fff;
+    .footer-wrap {
+        color: #848181;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+    }
+}
