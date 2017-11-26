@@ -1,6 +1,6 @@
 <template>
     <div class="home-wrap">
-        <el-row class="mar-bottom10">
+        <!-- <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
                 <h1 class="my-info-title mar-bottom15">我的个人信息</h1>
                 <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
@@ -35,7 +35,7 @@
                         </el-form>
                     </el-tab-pane>
                     <el-tab-pane label="会议列表" name="meeting">
-                        <div class="my-">会议列表</div>
+                        <div class="">会议列表</div>
                         <el-table :data="tableData" style="width: 100%">
                             <el-table-column type="index" width="50"></el-table-column>
                             <el-table-column prop="date" label="会议名称" width=""></el-table-column>
@@ -55,7 +55,7 @@
                     </el-tab-pane>
                 </el-tabs>
             </el-col>
-        </el-row>
+        </el-row> -->
     </div>
 </template>
 
@@ -64,34 +64,31 @@ import '@/static/style/home/index.scss'
 export default {
     data () {
         return {
-            activeName: 'meeting',
-            form: {
-                a: '',
-                b: 0,
-                c: '',
-                d: '',
-                e: '',
-                f: ''
-            },
-            tableData: [
-                {
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                },
-                {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }
-            ]
+            // activeName: 'meeting',
+            // form: {
+            //     a: '',
+            //     b: 0,
+            //     c: '',
+            //     d: '',
+            //     e: '',
+            //     f: ''
+            // },
+            // tableData: [
+            //     {
+            //         date: '2016-05-02',
+            //         name: '王小虎',
+            //         address: '上海市普陀区金沙江路 1518 弄'
+            //     },
+            //     {
+            //         date: '2016-05-04',
+            //         name: '王小虎',
+            //         address: '上海市普陀区金沙江路 1517 弄'
+            //     }
+            // ]
         }
     },
-    computed: {
-
-    },
     methods: {
-        handleClick() {
+        handleClick(val) {
 
         }
     }
