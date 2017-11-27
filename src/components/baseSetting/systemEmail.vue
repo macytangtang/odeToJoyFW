@@ -1,6 +1,7 @@
 <template>
     <div>
-        系统邮箱
+        <h1 class="wrap-title mar-bottom15">系统邮箱管理</h1>
+
     </div>
 </template>
 

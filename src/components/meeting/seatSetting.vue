@@ -1,6 +1,6 @@
 <template>
     <div>
-        坐席设置
+        <h1 class="wrap-title mar-bottom15">会议室列表</h1>
     </div>
 </template>
 
