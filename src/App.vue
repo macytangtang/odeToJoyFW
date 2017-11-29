@@ -6,7 +6,7 @@
             </el-header>
             <el-container>
                 <transition name="fade">
-                    <el-aside width="200px" v-if="navCollapse">
+                    <el-aside width="300px" v-if="navCollapse">
                         <nav-aside></nav-aside>
                     </el-aside>
                 </transition>
@@ -56,10 +56,10 @@ export default {
 }
 @keyframes fade-in {
     from { width:0; }
-      to { width:200px; }
+      to { width:300px; }
 }
 @keyframes fade-out {
-    from { width:200px; }
+    from { width:300px; }
       to { width:0; }
 }
 
