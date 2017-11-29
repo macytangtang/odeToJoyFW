@@ -41,7 +41,7 @@
                 <el-checkbox v-model="checked">允许该参会人发起同屏</el-checkbox>
             </el-form-item>
             <el-form-item label=" ">
-                <el-button type="primary" size="small">提交信息</el-button><br>
+                <el-button type="primary" size="small">提交信息</el-button>
                 <el-button type="success" size="small">刷新信息</el-button>
             </el-form-item>
         </el-form>

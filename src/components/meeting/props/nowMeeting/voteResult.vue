@@ -8,6 +8,7 @@
 <script>
 // 当前会议 => 投票结果
 export default {
+    props: ['nowMeeting'],
     data() {
         return {
             list: []

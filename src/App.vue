@@ -5,9 +5,11 @@
                 <nav-header></nav-header>
             </el-header>
             <el-container>
-                <el-aside width="200px">
-                    <nav-aside></nav-aside>
-                </el-aside>
+                <transition name="fade">
+                    <el-aside width="200px" v-if="navCollapse">
+                        <nav-aside></nav-aside>
+                    </el-aside>
+                </transition>
                 <el-container>
                     <el-main>
                         <router-view/>
@@ -28,6 +30,16 @@ import navFooter from '@/components/nav/footer.vue'
 import '@/static/style/base.scss'
 export default {
     name: 'app',
+    data () {
+        return {
+            isCollapse: true,
+            defaultElmenu: this.$route.path,
+            abc: ['asssssss']
+        }
+    },
+    computed: {
+        navCollapse() { return this.$store.getters.navCollapse }
+    },
     components: {
         navHeader,
         navAside,
@@ -35,3 +47,20 @@ export default {
     }
 }
 </script>
+<style>
+.fade-enter-active {
+    animation: fade-in .5s linear;
+}
+.fade-leave-active {
+  animation: fade-out .5s linear;
+}
+@keyframes fade-in {
+    from { width:0; }
+      to { width:200px; }
+}
+@keyframes fade-out {
+    from { width:200px; }
+      to { width:0; }
+}
+
+</style>

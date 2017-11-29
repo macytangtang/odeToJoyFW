@@ -27,8 +27,8 @@
                 <el-input v-model="form.e"></el-input>
             </el-form-item>
             <el-form-item label=" ">
-                <el-button type="primary" size="small">提交信息</el-button><br>
-                <el-button type="success" size="small">刷新信息</el-button><br>
+                <el-button type="primary" size="small">提交信息</el-button>
+                <el-button type="success" size="small">刷新信息</el-button>
                 <el-button type="danger" size="small">删除信息</el-button>
             </el-form-item>
         </el-form>

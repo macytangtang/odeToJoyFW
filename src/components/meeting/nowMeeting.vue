@@ -1,27 +1,43 @@
 <template>
     <div>
         <h1 class="wrap-title mar-bottom15">当前会议信息</h1>
-        <el-tabs v-model="activeName" type="border-card">
+        <el-row class="mar-bottom10">
+            <el-col :span="24" class="el-item pdd-10">
+                <!-- <div class="">会议列表</div> -->
+                <el-table :data="moduleData.list" style="width: 100%">
+                    <el-table-column type="index" width="50"></el-table-column>
+                    <el-table-column prop="title" label="会议名称" width="250" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="status" label="会议状态" width="100"></el-table-column>
+                    <el-table-column label="运行" min-width="180">
+                        <template slot-scope="scope">
+                            <el-button type="primary" @click="checkMeeting(scope)" size="small">查看会议</el-button>
+                            <el-button type="danger" @click="startMeeting(scope)" size="small">开始会议</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+        </el-row>
+        <el-tabs v-model="activeName" type="border-card" v-if="nowMeeting != ''">
             <el-tab-pane label="基本信息" name="info">
-                <meeting-info></meeting-info>
+                <meeting-info :nowMeeting="nowMeeting"></meeting-info>
             </el-tab-pane>
             <el-tab-pane label="会议议程" name="agenda">
-                <meeting-agenda></meeting-agenda>
+                <meeting-agenda :nowMeeting="nowMeeting"></meeting-agenda>
             </el-tab-pane>
             <el-tab-pane label="会议文件" name="file">
-                <meeting-file></meeting-file>
+                <meeting-file :nowMeeting="nowMeeting"></meeting-file>
             </el-tab-pane>
             <el-tab-pane label="会议表决" name="vote">
-                <meeting-vote></meeting-vote>
+                <meeting-vote :nowMeeting="nowMeeting"></meeting-vote>
             </el-tab-pane>
             <el-tab-pane label="参会人" name="people">
-                <meeting-people></meeting-people>
+                <meeting-people :nowMeeting="nowMeeting"></meeting-people>
             </el-tab-pane>
             <el-tab-pane label="签到情况" name="signIn">
-                <meeting-signIn></meeting-signIn>
+                <meeting-signIn :nowMeeting="nowMeeting"></meeting-signIn>
             </el-tab-pane>
             <el-tab-pane label="投票结果" name="voteResult">
-                <meeting-vote-result></meeting-vote-result>
+                <meeting-vote-result :nowMeeting="nowMeeting"></meeting-vote-result>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -39,7 +55,35 @@ import meetingVoteResult from '@/components/meeting/props/nowMeeting/voteResult.
 export default {
     data () {
         return {
-            activeName: 'info'
+            nowMeeting: '',
+            activeName: 'info',
+            moduleData: {
+                list: []
+            }
+        }
+    },
+    created() {
+        this.getMeetingList()
+    },
+    methods: {
+        getMeetingList() {
+            this.$api.apiCommunication('/Meeting/getMeetingList', {}, response => {
+                if (response.status === 200) {
+                    if(response.data !== []) {
+                        this.moduleData.list = response.data.list
+                    } else {
+                        this.moduleData.list = []
+                    }
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        checkMeeting(val) {
+            this.nowMeeting = val.row.conference_id
+        },
+        startMeeting(val) {
+
         }
     },
     components: {

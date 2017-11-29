@@ -1,0 +1,1 @@
+export const ASIDE_SWITCH = 'ASIDE_SWITCH'

@@ -1,7 +1,7 @@
 <template>
     <div class="aside-wrap">
         <!-- <i class="iconfont icon-home"></i> -->
-        <el-menu :default-active="defaultElmenu" :unique-opened="true" mode="vertical" :router="true" background-color="#4549B1" text-color="#fff" active-text-color="#F0A74E" @open="handleOpen" @close="handleClose">
+        <el-menu :default-active="defaultElmenu" :unique-opened="true" mode="vertical" :router="true" background-color="#4549B1" text-color="#fff" active-text-color="#F0A74E">
             <el-menu-item index="/">
                 <i class="el-icon-setting"></i>
                 <!-- <i class="iconfont icon-home"></i> -->
@@ -51,13 +51,8 @@ export default {
             abc: ['asssssss']
         }
     },
-    methods: {
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      }
+    computed: {
+        navCollapse() { return this.$store.getters.navCollapse }
     }
 }
 </script>

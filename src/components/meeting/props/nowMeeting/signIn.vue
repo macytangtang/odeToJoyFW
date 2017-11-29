@@ -10,6 +10,7 @@
 <script>
 // 当前会议 => 签到情况
 export default {
+    props: ['nowMeeting'],
     data() {
         return {
             list: []

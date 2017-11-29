@@ -1,6 +1,6 @@
 <template>
     <div class="header-wrap">
-        <el-button type="text" class="toggle-aside"><i class="iconfont icon-menu"></i></el-button>
+        <el-button type="text" class="toggle-aside" @click="switchAside"><i class="iconfont icon-menu"></i></el-button>
         <div class="header-logo">
             <h1>方圆智汇</h1>
             <p>无纸化会议系统</p>
@@ -34,6 +34,7 @@ export default {
         }
     },
     computed: {
+        navCollapse() { return this.$store.getters.navCollapse },
         arrow() {
             return this.arrowStatus ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
         }
@@ -44,6 +45,9 @@ export default {
         },
         handleVisibleChange(val) {
             this.arrowStatus = val
+        },
+        switchAside() {
+            this.$store.dispatch('switchAside', this.navCollapse ? false : true)
         }
     }
 }
