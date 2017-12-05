@@ -6,21 +6,16 @@
             <p>无纸化会议系统</p>
         </div>
 		<div class="toolbar-features">
-			<el-dropdown trigger="click" @command="handleCommand" @visible-change="handleVisibleChange">
-				<div class="el-dropdown-link">
-                    <img src="../../static/images/header.jpg" alt="头像" class="features-head">
-                    <div class="features-name">
-                        <h1>李从胜</h1>
-                        <p>管理员</p>
-                    </div>
-                    <i class="features-icon" :class="arrow"></i>
-				</div>
-				<el-dropdown-menu slot="dropdown">
-					<el-dropdown-item command="setPassword">Setting</el-dropdown-item>
-					<el-dropdown-item command="setPassword">Profile</el-dropdown-item>
-					<el-dropdown-item command="setPassword">Logout</el-dropdown-item>
-				</el-dropdown-menu>
-			</el-dropdown>
+			<div class="el-dropdown-link">
+                <img src="../../static/images/header.jpg" alt="头像" class="features-head">
+                <div class="features-name">
+                    <template v-if="userInfo">
+                        <h1>{{ userInfo.name }}</h1>
+                        <p>{{ userInfo.auth | authStatus }}</p>
+                    </template>
+                </div>
+                <el-button type="text" @click="outLogin"><i class="features-icon iconfont icon-iconfontloginout"></i></el-button>
+			</div>
 		</div>
     </div>
 </template>
@@ -35,19 +30,24 @@ export default {
     },
     computed: {
         navCollapse() { return this.$store.getters.navCollapse },
-        arrow() {
-            return this.arrowStatus ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
-        }
+        account() { return this.$store.getters.getAccount },
+        authName() { return this.$store.getters.getAuthName },
+        userInfo() { return this.$store.getters.userInfo }
     },
     methods: {
-        handleCommand() {
-
-        },
-        handleVisibleChange(val) {
-            this.arrowStatus = val
-        },
         switchAside() {
             this.$store.dispatch('switchAside', this.navCollapse ? false : true)
+        },
+        outLogin() {
+            this.$confirm('确定退出登录？', '系统通知', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$store.dispatch('outLogin')
+            }).catch(() => {
+                // 取消
+            })
         }
     }
 }

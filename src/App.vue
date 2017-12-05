@@ -37,8 +37,23 @@ export default {
             abc: ['asssssss']
         }
     },
+    created() {
+        this.getModuleData()
+    },
     computed: {
-        navCollapse() { return this.$store.getters.navCollapse }
+        navCollapse() { return this.$store.getters.navCollapse },
+        userId() { return this.$store.getters.getUserId }
+    },
+    methods: {
+        getModuleData() {
+            this.$api.apiCommunication('/User/getUserInfo', { user_id: this.userId }, response => {
+                if (response.status === 200) {
+                    this.$store.dispatch('saveUserInfo', response.data)
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        }
     },
     components: {
         navHeader,

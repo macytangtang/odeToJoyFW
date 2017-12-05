@@ -1,0 +1,92 @@
+@import "../min";
+
+#login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #4549b1;
+    width: 100%;
+    height: 100%;
+    .login-header {
+        padding: 22px 0;
+        height: 60px;
+        .header-logo {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            h1 {
+                display: block;
+                float: left;
+                zoom: 1;
+                width: 206px;
+                height: 60px;
+                vertical-align: middle;
+                z-index: 99;
+            }
+            .header-title {
+                position: absolute;
+                width: 100%;
+                height: 60px;
+                line-height: 60px;
+                top: 0;
+                left: 0;
+                font-size: 2.4em;
+                font-weight: 400;
+                color: #000;
+                z-index: 9;
+                text-align: center;
+            }
+        }
+    }
+    .login-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        // height: calc(100% - 104px);
+        // background-image: url(../../img/login-bg.jpg);
+        // background-repeat: no-repeat;
+        // background-position: center center;
+        // background-size: cover;
+        .content-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            .form-wrap {
+                position: absolute;
+                top: 125.5px;
+                left: 50%;
+                width: 333px;
+                padding: 25px;
+                margin-left: -174.5px;
+                background-color: #fff;
+                border-radius: 10px;
+                h2 {
+                    font-weight: 400;
+                    font-size: 1.2em;
+                }
+                h1 {
+                    font-weight: 400;
+                    font-size: 2.3em;
+                }
+                .content-login {
+                    width: 100%;
+                    margin-top: 20px;
+                }
+            }
+            .login-footer {
+                width: 100%;
+                margin: 0 auto;
+                text-align: center;
+                position: absolute;
+                left: 0;
+                bottom: 30px;
+                p {
+                    color: #aaa;
+                    line-height: 1.7em;
+                }
+            }
+        }
+    }
+}

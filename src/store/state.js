@@ -1,7 +1,10 @@
 // import cookie from 'react-cookie'
 
 const state = {
-    navCollapse: true
+    navCollapse: true,
+    userName: '',
+    userInfo: null,
+    addMeetingNum: 'info'
 }
 
 export default state

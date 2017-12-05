@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="wrap-title mar-bottom15">当前会议信息</h1>
+        <h1 class="wrap-title mar-bottom15">会议列表</h1>
         <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
                 <!-- <div class="">会议列表</div> -->

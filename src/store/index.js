@@ -3,7 +3,7 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import login from '@/store/modules/login'
+import login from '@/store/modules/login'
 import state from '@/store/state'
 import getters from '@/store/getters'
 import * as actions from '@/store/actions'
@@ -16,9 +16,9 @@ const store = new Vuex.Store({
     getters,
     actions,
     mutations,
-    // modules: {
-    //     login
-    // },
+    modules: {
+        login
+    },
     strict: process.env.NODE_ENV !== 'production', //是否开启严格模式
 })
 

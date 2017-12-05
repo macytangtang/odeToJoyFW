@@ -22,20 +22,29 @@
                     <span>会议室管理</span>
                 </template>
                 <el-menu-item index="/meetingroomSetting">会议室设置</el-menu-item>
-                <el-menu-item index="/seatSetting">坐席设置</el-menu-item>
+                <!-- <el-menu-item index="/seatSetting">坐席设置</el-menu-item> -->
             </el-submenu>
-            <el-menu-item index="/addMeeting">
+            <el-submenu index="4">
+                <template slot="title">
+                    <i class="el-icon-setting"></i>
+                    <span>会议管理</span>
+                </template>
+                <el-menu-item index="/addMeeting">新增会议</el-menu-item>
+                <el-menu-item index="/nowMeeting">会议列表</el-menu-item>
+                <el-menu-item index="/endMeeting">已结束会议</el-menu-item>
+            </el-submenu>
+            <!-- <el-menu-item index="/addMeeting">
                 <i class="el-icon-setting"></i>
                 <span slot="title">新增会议</span>
             </el-menu-item>
             <el-menu-item index="/nowMeeting">
                 <i class="el-icon-setting"></i>
-                <span slot="title">当前会议</span>
+                <span slot="title">会议列表</span>
             </el-menu-item>
             <el-menu-item index="/endMeeting">
                 <i class="el-icon-setting"></i>
                 <span slot="title">已结束会议</span>
-            </el-menu-item>
+            </el-menu-item> -->
         </el-menu>
     </div>
 </template>

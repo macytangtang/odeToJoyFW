@@ -7,15 +7,15 @@
             <el-checkbox v-model="form.is_secrecy">保密会议</el-checkbox>（会议结束后自动系统将删除会议相关材料）
         </el-form-item>
         <el-form-item label="会议室">
-            <el-select v-model="form.brooms" placeholder="选择会议室" filterable>
-                <el-option label="管理员" :value="0"></el-option>
+            <el-select v-model="form.rooms" placeholder="选择会议室" filterable>
+                <el-option :label="item.title" :value="item.room_id" :key="item.room_id" v-for="item in meetingRoom"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="开始时间">
-            <el-input v-model="form.start_time"></el-input>
+            <el-date-picker v-model="form.start_time" type="datetime" placeholder="选择开始时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
         </el-form-item>
         <el-form-item label="结束时间">
-            <el-input v-model="form.end_time"></el-input>
+            <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
         </el-form-item>
         <el-form-item label="参会人数">
             <el-input v-model="form.conferee_num"></el-input>
@@ -27,29 +27,26 @@
             <el-input v-model="form.department"></el-input>
         </el-form-item>
         <el-form-item label="服务提供">
-            <el-checkbox-group v-model="form.f">
-                <el-checkbox label="茶水"></el-checkbox>
-                <el-checkbox label="咖啡"></el-checkbox>
-                <el-checkbox label="保洁"></el-checkbox>
-                <el-checkbox label="纸笔"></el-checkbox>
+            <el-checkbox-group v-model="form.services">
+                <el-checkbox :label="item.config_id" :key="item.config_id" v-for="item in roomsConfigList">{{ item.title }}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="功能需求">
-            <el-checkbox-group v-model="form.f">
-                <el-checkbox label="议程查看"></el-checkbox>
-                <el-checkbox label="文件浏览"></el-checkbox>
-                <el-checkbox label="批注文件"></el-checkbox>
-                <el-checkbox label="投票表决"></el-checkbox>
-                <el-checkbox label="服务呼叫"></el-checkbox>
-                <el-checkbox label="同屏请求"></el-checkbox>
-                <el-checkbox label="电子白板"></el-checkbox>
-                <el-checkbox label="投影请求"></el-checkbox>
-                <el-checkbox label="聊天室"></el-checkbox>
-                <el-checkbox label="视频录播"></el-checkbox>
+            <el-checkbox-group v-model="form.functions">
+                <el-checkbox :label="1">议程查看</el-checkbox>
+                <el-checkbox :label="2">文件浏览</el-checkbox>
+                <el-checkbox :label="3">批注文件</el-checkbox>
+                <el-checkbox :label="4">投票表决</el-checkbox>
+                <el-checkbox :label="5">服务呼叫</el-checkbox>
+                <el-checkbox :label="6">同屏请求</el-checkbox>
+                <el-checkbox :label="7">电子白板</el-checkbox>
+                <el-checkbox :label="8">投影请求</el-checkbox>
+                <el-checkbox :label="9">聊天室</el-checkbox>
+                <el-checkbox :label="10">视频录播</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="备注">
-            <el-input v-model="form.f"></el-input>
+            <el-input v-model="form.description"></el-input>
         </el-form-item>
         <el-form-item label=" ">
             <el-button type="primary" size="small" @click="submit('form')">提交信息</el-button>
@@ -62,29 +59,67 @@ export default {
     data() {
         return {
             checked: false,
-
             form: {
-
-                a: '',
-                b: 0,
-                c: '',
-                d: '',
-                e: '',
-                f: ''
-            }
+                title: '',
+                is_secrecy: false,
+                rooms: '',
+                start_time: '',
+                end_time: '',
+                conferee_num: '',
+                clerk_id: '',
+                department: '',
+                services: [],
+                functions: [],
+                description: ''
+            },
+            meetingRoom: [],
+            roomsConfigList: []
         }
     },
+    created() {
+        this.getMeetingRoom()
+        this.getRoomsConfigList()
+    },
     methods: {
+        getMeetingRoom() {
+            this.$api.apiCommunication('/Rooms/getRoomsList', {}, response => {
+                if (response.status === 200) {
+                    if(response.data !== []) {
+                        this.meetingRoom = response.data.list
+                    } else {
+                        this.meetingRoom = []
+                    }
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        getRoomsConfigList() {
+            this.$api.apiCommunication('/Rooms/getRoomsConfigList', {}, response => {
+                if (response.status === 200) {
+                    if(response.data !== []) {
+                        this.roomsConfigList = response.data.list
+                    } else {
+                        this.roomsConfigList = []
+                    }
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
         submit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let param = {},
-                        apiname = this.marked === 'add' ? '/User/createUser' : '/User/updateUser'
+                    let param = {}
                     Object.assign(param, this.form)
-                    this.$api.apiCommunication(apiname, param, response => {
-                        this.dialogVisible = false
+                    param.services = param.services.join(',')
+                    param.functions = param.functions.join(',')
+                    param.is_secrecy = param.is_secrecy ? 1 : 0
+                    console.log(param)
+                    this.$api.apiCommunication('/Meeting/createMeeting', param, response => {
                         if (response.status === 200) {
-                            this.getModuleData()
+                            this.$notify({ title: '系统通知', message: '新增会议成功', type: 'success' })
+                            // this.$refs[formName].resetFields()
                         } else {
                             this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                         }

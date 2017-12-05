@@ -14,9 +14,8 @@ export default {
       */
     apiCommunication(apiname, param, callback, type) {
         let params = param
-        if(apiname !== '/Login/login') {
-            // Object.assign(params, { token: store.getters.getToken })
-            Object.assign(params, { token: 'asdjaksdja' })
+        if(apiname !== '/User/login') {
+            Object.assign(params, { token: store.getters.getToken })
         }
         axios.post(basicConfig.API_HOST + apiname, querystring.stringify(params))
             .then(response => {
@@ -26,27 +25,26 @@ export default {
 }
 
 // 添加接口回调拦截器
-// axios.interceptors.response.use(response => {
-    // if(response.status === 200) {
-    //     if(response.data.status === -1) {
-    //         // token过期，执行退出登录
-    //         store.dispatch('switchLoadingStatus', false)
-    //         MessageBox.alert('登录失效，请重新登录', '系统通知', {
-    //             confirmButtonText: '确定',
-    //             type: 'error',
-    //             callback: action => {
-    //                 store.dispatch('outLogin')
-    //             }
-    //         })
-    //     } else {
-    //         return response
-    //     }
-    // }else {
-    //     MessageBox.alert('接口通讯失败，请尝试刷新页面或者重新登录。如果还是存在问题，请联系管理员[warning]', '系统通知', { confirmButtonText: '确定', type: 'error' })
-    // }
-// }, error => {
+axios.interceptors.response.use(response => {
+    if(response.status === 200) {
+        if(response.data.status === 0) {
+            // token过期，执行退出登录
+            // store.dispatch('switchLoadingStatus', false)
+            MessageBox.alert('登录失效，请重新登录', '系统通知', {
+                confirmButtonText: '确定',
+                type: 'error',
+                callback: action => {
+                    store.dispatch('outLogin')
+                }
+            })
+        } else {
+            return response
+        }
+    }else {
+        MessageBox.alert('接口通讯失败，请尝试刷新页面或者重新登录。如果还是存在问题，请联系管理员[warning]', '系统通知', { confirmButtonText: '确定', type: 'error' })
+    }
+}, error => {
     // store.dispatch('switchLoadingStatus', false)
-    // MessageBox.alert(`接口通讯失败，请尝试刷新页面或者重新登录。如果还是存在问题，请联系管理员[error]: ${error}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
-    // Notification({ title: '系统通知', message: `检测到接口通讯失败，请联系管理员[error]: ${error}`, type: 'error' })
-    // return Promise.reject(error)
-// })
+    MessageBox.alert(`接口通讯失败，请尝试刷新页面或者重新登录。如果还是存在问题，请联系管理员[error]: ${error}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+    return Promise.reject(error)
+})

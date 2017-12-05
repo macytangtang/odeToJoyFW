@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="wrap-title mar-bottom15">服务列表 <el-button type="primary" @click="addEditorData(0, 'add')" size="mini">新增服务</el-button></h1>
+        <h1 class="wrap-title mar-bottom15">服务列表 <el-button type="primary" @click="addEditorData(0, 'add')" size="mini" class="bread-addbtn">新增服务</el-button></h1>
         <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
                 <el-table :data="moduleData.list" style="width: 100%">

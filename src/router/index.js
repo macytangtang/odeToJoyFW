@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 import home from '@/components/home'
 import userMana from '@/components/baseSetting/userMana.vue'
 import systemEmail from '@/components/baseSetting/systemEmail.vue'
@@ -9,6 +10,8 @@ import seatSetting from '@/components/meeting/seatSetting.vue'
 import addMeeting from '@/components/meeting/addMeeting.vue'
 import nowMeeting from '@/components/meeting/nowMeeting.vue'
 import endMeeting from '@/components/meeting/endMeeting.vue'
+import notfound from '@/components/fengModule/notfound.vue'
+import login from '@/components/login'
 
 Vue.use(VueRouter)
 
@@ -17,6 +20,11 @@ const routes = [
         name: 'home',
         path: '/',
         component: home
+    },
+    {
+        name: 'login',
+        path: '/login',
+        component: login
     },
     {
         name: 'userMana',
@@ -40,7 +48,8 @@ const routes = [
     },
     {
         name: 'seatSetting',
-        path: '/seatSetting',
+        path: '/seatSetting/:id',
+        props: true,
         component: seatSetting
     },
     {
@@ -57,6 +66,15 @@ const routes = [
         name: 'endMeeting',
         path: '/endMeeting',
         component: endMeeting
+    },
+    {
+        name: 'notfound',
+        path: '/404',
+        component: notfound
+    },
+    {
+        path: '*',
+        redirect: '/404'
     }
 ]
 
@@ -68,18 +86,18 @@ const router = new VueRouter({
 })
 
 // 注册导航全局钩子，检查是否已登录，是否有权限进入下个链接
-// router.beforeEach((to, from, next) => {
-    // let token = store.getters.getToken
-    // if (token != null && to.path == '/login') {
-    //     // 已登录不能进入登录页
-    //     next('/')
-    // }
-    // if (token === null && to.path !== '/login' && to.path !== '/404') {
-    //     // 未登录
-    //     next('/login')
-    // } else {
-    //     next()
-    // }
-// })
+router.beforeEach((to, from, next) => {
+    let token = store.getters.getToken
+    if (token != null && to.path == '/login') {
+        // 已登录不能进入登录页
+        next('/')
+    }
+    if (token === null && to.path !== '/login' && to.path !== '/404') {
+        // 未登录
+        next('/login')
+    } else {
+        next()
+    }
+})
 
 export  default router

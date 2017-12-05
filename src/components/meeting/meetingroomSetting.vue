@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="wrap-title mar-bottom15">会议室列表 <el-button type="primary" @click="addEditorData(0, 'add')" size="mini">新增会议室</el-button></h1>
+        <h1 class="wrap-title mar-bottom15">会议室列表 <el-button type="primary" @click="addEditorData(0, 'add')" size="mini" class="bread-addbtn">新增会议室</el-button></h1>
         <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
                 <el-table :data="moduleData.list" style="width: 100%">
@@ -10,11 +10,16 @@
                     <el-table-column prop="seats_num" label="坐席数" width="100" ></el-table-column>
                     <el-table-column prop="manager_id" label="负责人" width="100"></el-table-column>
                     <el-table-column prop="img_map" label="布局" width="130"></el-table-column>
-                    <el-table-column prop="status" label="状态" width="90"></el-table-column>
-                    <el-table-column label="操作" min-width="180">
+                    <el-table-column label="状态" width="90">
+                        <template slot-scope="scope">
+                            {{ scope.row.status | meetingroomStatus }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" min-width="250">
                         <template slot-scope="scope">
                             <el-button type="primary" @click="addEditorData(scope, 'editor')" size="small">编辑</el-button>
                             <el-button type="danger" @click="deleteData(scope)" size="small">删除</el-button>
+                            <el-button type="success" size="small" @click="seatSetting(scope)">坐席设置</el-button>
 						</template>
                     </el-table-column>
                 </el-table>
@@ -35,16 +40,16 @@
                     <el-input v-model="form.manager_id"></el-input>
                 </el-form-item>
                 <el-form-item label="布局">
-                    <el-input v-model="form.img_map"></el-input>
+                    <feng-image-upload :imageUrl="form.img_map" @increment="handleAvatarScucess"></feng-image-upload>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="状态" filterable>
                         <el-option label="可用" :value="1"></el-option>
-                        <el-option label="禁用" :value="0"></el-option>
+                        <el-option label="禁用" :value="-1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label=" ">
-                    <el-button type="primary" size="small" @click="submitEditor('form')">提交信息</el-button>
+                    <el-button type="primary" size="small" @click="submitEditor('form')">提交保存</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -52,6 +57,8 @@
 </template>
 
 <script>
+import fengImageUpload from '@/components/fengModule/imageUpload.vue'
+
 export default {
     data () {
         return {
@@ -126,14 +133,37 @@ export default {
             })
         },
         deleteData(val) {
-            this.$api.apiCommunication('/Rooms/deleteRooms', { room_id: val.row.room_id }, response => {
-                if (response.status === 200) {
-                    this.getModuleData()
-                } else {
-                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
-                }
+            this.$confirm('确定删除该会议室？', '系统通知', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$api.apiCommunication('/Rooms/deleteRooms', { room_id: val.row.room_id }, response => {
+                    if (response.status === 200) {
+                        this.getModuleData()
+                    } else {
+                        this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                    }
+                })
+            }).catch(() => {
+                // 取消
             })
+        },
+        handleAvatarScucess(row) {
+            // 图片上传成功钩子，接收子组件数据
+            this.form.img_map = row
+        },
+        seatSetting(val) {
+            this.$router.push({ name: 'seatSetting', params: { id: val.row.room_id } })
         }
+    },
+    filters: {
+        meetingroomStatus(val) {
+            return val === 1 ? '可用' : '不可用'
+        }
+    },
+    components: {
+        fengImageUpload
     }
 }
 </script>
