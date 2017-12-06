@@ -1,55 +1,124 @@
 <template>
     <div>
-        <el-table :data="list" style="width: 100%">
-            <el-table-column prop="id" label="#" width="70"></el-table-column>
-            <el-table-column prop="name" label="主题" width="100"></el-table-column>
-            <el-table-column prop="phone" label="起始时间" width="140"></el-table-column>
-            <el-table-column prop="email" label="结束时间" width="180"></el-table-column>
-            <el-table-column prop="mark" label="主持" ></el-table-column>
+        <el-table :data="moduleData.list" style="width: 100%">
+            <el-table-column prop="agenda_id" label="#" width="70"></el-table-column>
+            <el-table-column prop="title" label="主题" width="100"></el-table-column>
+            <el-table-column prop="start_time" label="起始时间" width="180"></el-table-column>
+            <el-table-column prop="end_time" label="结束时间" width="180"></el-table-column>
+            <el-table-column prop="hostess_id" label="主持"></el-table-column>
         </el-table>
-        <div class="form-title">议程录入：</div>
-        <el-form ref="form" :model="form" label-width="80px" class="content-form">
-            <el-form-item label="议程编号">
-                <el-select v-model="form.a" placeholder="选择编号" filterable>
-                    <el-option :label="item" :value="item" v-for="item in 10" :key="item"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="主题">
-                <el-input v-model="form.b"></el-input>
-            </el-form-item>
-            <el-form-item label="开始时间">
-                <el-input v-model="form.c"></el-input>
-            </el-form-item>
-            <el-form-item label="结束时间">
-                <el-input v-model="form.d"></el-input>
-            </el-form-item>
-            <el-form-item label="主持人">
-                <el-input v-model="form.e"></el-input>
-            </el-form-item>
-            <el-form-item label=" ">
-                <el-button type="primary" size="small">提交信息</el-button>
-                <el-button type="success" size="small">刷新信息</el-button>
-                <el-button type="danger" size="small">删除信息</el-button>
-            </el-form-item>
-        </el-form>
+        <el-button type="primary" size="small" class="mar-top15" @click="addEditorData(0, 'add')">新增议程</el-button>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
+            <el-form ref="form" :model="form" label-width="80px" class="content-form">
+                <el-form-item label="议程编号">
+                    <el-input v-model="form.agenda_code"></el-input>
+                </el-form-item>
+                <el-form-item label="主题">
+                    <el-input v-model="form.title"></el-input>
+                </el-form-item>
+                <el-form-item label="开始时间">
+                    <el-date-picker v-model="form.start_time" type="datetime" placeholder="选择开始时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="结束时间">
+                    <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="主持人">
+                    <el-input v-model="form.hostess_id"></el-input>
+                </el-form-item>
+                <el-form-item label=" ">
+                    <el-button type="primary" size="small" @click="submitEditor('form')">提交保存</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
 // 添加会议 => 会议议程
 export default {
-    data() {
+    data () {
         return {
-            list: [
-
-            ],
+            marked: 'add',
+            dialogVisible: false,
             form: {
-                a: '',
-                b: '',
-                c: '',
-                d: '',
-                e: '',
-                f: ''
+                agenda_code: '',
+                title: '',
+                start_time: '',
+                end_time: '',
+                hostess_id: ''
+            },
+            moduleData: {
+                list: []
+            },
+            meetingId: this.$store.getters.addMeetingNum.meetingId
+        }
+    },
+    created() {
+        this.getModuleData()
+    },
+    computed: {
+        dialogTitle() { return this.marked === 'add' ? '新增议程' : '编辑议程' }
+    },
+    methods: {
+        getModuleData() {
+            this.$api.apiCommunication('/Meeting/getAgendaList', { conference_id: this.meetingId }, response => {
+                if (response.status === 200) {
+                    this.moduleData.list = response.data.list ? response.data.list : []
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        addEditorData(val, type) {
+            if(type === 'editor') {
+                // this.form.config_id = val.row.config_id
+            } else {
+                this.form = {
+                    agenda_code: '',
+                    title: '',
+                    start_time: '',
+                    end_time: '',
+                    hostess_id: ''
+                }
             }
+            this.marked = type
+            this.dialogVisible = true
+        },
+        submitEditor(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let param = {
+                            conference_id: this.meetingId,
+                            status: 1
+                        },
+                        apiname = this.marked === 'add' ? '/Meeting/createAgenda' : '/Meeting/updateAgenda'
+                    Object.assign(param, this.form)
+                    this.$api.apiCommunication(apiname, param, response => {
+                        this.dialogVisible = false
+                        if (response.status === 200) {
+                            this.$notify({ title: '系统通知', message: '新增会议议程成功', type: 'success' })
+                            this.getModuleData()
+                        } else {
+                            this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                        }
+                    })
+                } else {
+                    this.$notify({ title: '系统通知', message: '必填的字段不能为空或数据格式错误，请检查填写后重新提交', type: 'error' })
+                }
+            })
+        },
+        deleteData(val) {
+            this.$api.apiCommunication('/Rooms/deleteRoomsConfig', { config_id: val.row.config_id }, response => {
+                if (response.status === 200) {
+                    this.getModuleData()
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        }
+    },
+    filters: {
+        configType(val) {
+            return val === 1 ? '服务' : '功能'
         }
     }
 }

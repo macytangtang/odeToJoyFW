@@ -17,7 +17,7 @@
                 </el-table>
             </el-col>
         </el-row>
-        <el-tabs v-model="activeName" type="border-card" v-if="nowMeeting != ''">
+        <el-tabs :value="activeName" type="border-card" v-if="nowMeeting != ''">
             <el-tab-pane label="基本信息" name="info">
                 <meeting-info :nowMeeting="nowMeeting"></meeting-info>
             </el-tab-pane>

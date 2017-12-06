@@ -7,7 +7,7 @@
             <el-checkbox v-model="form.is_secrecy">保密会议</el-checkbox>（会议结束后自动系统将删除会议相关材料）
         </el-form-item>
         <el-form-item label="会议室">
-            <el-select v-model="form.rooms" placeholder="选择会议室" filterable>
+            <el-select v-model="form.rooms" placeholder="选择会议室" multiple filterable>
                 <el-option :label="item.title" :value="item.room_id" :key="item.room_id" v-for="item in meetingRoom"></el-option>
             </el-select>
         </el-form-item>
@@ -28,21 +28,12 @@
         </el-form-item>
         <el-form-item label="服务提供">
             <el-checkbox-group v-model="form.services">
-                <el-checkbox :label="item.config_id" :key="item.config_id" v-for="item in roomsConfigList">{{ item.title }}</el-checkbox>
+                <el-checkbox :label="item.config_id" :key="item.config_id" v-for="item in roomsConfigListService">{{ item.title }}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="功能需求">
             <el-checkbox-group v-model="form.functions">
-                <el-checkbox :label="1">议程查看</el-checkbox>
-                <el-checkbox :label="2">文件浏览</el-checkbox>
-                <el-checkbox :label="3">批注文件</el-checkbox>
-                <el-checkbox :label="4">投票表决</el-checkbox>
-                <el-checkbox :label="5">服务呼叫</el-checkbox>
-                <el-checkbox :label="6">同屏请求</el-checkbox>
-                <el-checkbox :label="7">电子白板</el-checkbox>
-                <el-checkbox :label="8">投影请求</el-checkbox>
-                <el-checkbox :label="9">聊天室</el-checkbox>
-                <el-checkbox :label="10">视频录播</el-checkbox>
+                <el-checkbox :label="item.config_id" :key="item.config_id" v-for="item in roomsConfigListFunctions">{{ item.title }}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="备注">
@@ -62,7 +53,7 @@ export default {
             form: {
                 title: '',
                 is_secrecy: false,
-                rooms: '',
+                rooms: [],
                 start_time: '',
                 end_time: '',
                 conferee_num: '',
@@ -77,8 +68,30 @@ export default {
         }
     },
     created() {
-        this.getMeetingRoom()
-        this.getRoomsConfigList()
+        if(!(this.$store.getters.addMeetingNum.pane !== 'info')) {
+            this.getMeetingRoom()
+            this.getRoomsConfigList()
+        }
+    },
+    computed: {
+        roomsConfigListService() {
+            let _arr = []
+            for (let item of this.roomsConfigList) {
+                if(item.config_type === 1){
+                    _arr.push(item)
+                }
+            }
+            return _arr
+        },
+        roomsConfigListFunctions() {
+            let _arr = []
+            for (let item of this.roomsConfigList) {
+                if(item.config_type === 2){
+                    _arr.push(item)
+                }
+            }
+            return _arr
+        }
     },
     methods: {
         getMeetingRoom() {
@@ -110,16 +123,25 @@ export default {
         submit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let param = {}
+                    let param = {
+                        status: 1
+                    }
                     Object.assign(param, this.form)
                     param.services = param.services.join(',')
                     param.functions = param.functions.join(',')
                     param.is_secrecy = param.is_secrecy ? 1 : 0
-                    console.log(param)
+                    param.rooms = param.rooms.join(',')
                     this.$api.apiCommunication('/Meeting/createMeeting', param, response => {
                         if (response.status === 200) {
                             this.$notify({ title: '系统通知', message: '新增会议成功', type: 'success' })
-                            // this.$refs[formName].resetFields()
+                            let param = {
+                                type: 'save',
+                                data: {
+                                    pane: 'agenda',
+                                    meetingId: response.data
+                                }
+                            }
+                            this.$store.dispatch('addMeetingNum', param)
                         } else {
                             this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                         }
@@ -128,7 +150,7 @@ export default {
                     this.$notify({ title: '系统通知', message: '必填的字段不能为空或数据格式错误，请检查填写后重新提交', type: 'error' })
                 }
             })
-        },
+        }
     }
 }
 </script>

@@ -13,7 +13,7 @@
                 </el-form>
             </el-col>
         </el-row>
-        <el-tabs v-model="activeName" type="border-card">
+        <el-tabs :value="activeName" type="border-card">
             <el-tab-pane label="基本信息" name="info">
                 <meeting-info></meeting-info>
             </el-tab-pane>

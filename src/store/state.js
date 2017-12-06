@@ -4,7 +4,10 @@ const state = {
     navCollapse: true,
     userName: '',
     userInfo: null,
-    addMeetingNum: 'info'
+    addMeetingNum: {
+        pane: 'file',
+        meetingId: 5
+    }
 }
 
 export default state

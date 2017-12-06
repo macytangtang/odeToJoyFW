@@ -26,6 +26,6 @@ export const addMeetingNum = ({ commit }, param) => {
     if(param.type === 'save') {
         commit(types.ADD_MEETING_NUM_SAVE_DEL, param.data)
     } else {
-        commit(types.ADD_MEETING_NUM_SAVE_DEL, '')
+        commit(types.ADD_MEETING_NUM_SAVE_DEL, { pane: 'info', meetingId: '' })
     }
 }

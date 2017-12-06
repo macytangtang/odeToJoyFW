@@ -38,7 +38,9 @@ export default {
         }
     },
     created() {
-        this.getModuleData()
+        if(this.$route.name !== 'login'){
+            this.getModuleData()
+        }
     },
     computed: {
         navCollapse() { return this.$store.getters.navCollapse },

@@ -17,8 +17,8 @@
                     <h2>USER LOGIN</h2>
                     <h1>用户登录</h1>
                     <el-form :model="form" :rules="rules" ref="form">
-                        <el-form-item prop="name">
-                            <el-input placeholder="请输入登录邮箱" v-model="form.name" class="mar-top20" size="large">
+                        <el-form-item prop="email">
+                            <el-input placeholder="请输入登录邮箱" v-model="form.email" class="mar-top20" size="large">
                                 <template slot="prepend">
                                     <i class="iconfont icon-account fs-1s2em"></i>
                                 </template>
@@ -50,12 +50,12 @@ export default {
     data() {
         return {
             form: {
-                name: '',
+                email: '',
                 password: ''
             },
             rules: {
-                name: [
-                    { required: true, message: '请输入登录账号', trigger: 'blur' },
+                email: [
+                    { required: true, message: '请输入登录邮箱账号', trigger: 'blur' },
                     { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
                 ],
                 password: [
