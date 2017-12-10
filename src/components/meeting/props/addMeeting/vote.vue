@@ -1,25 +1,33 @@
 <template>
     <div>
         <el-table :data="moduleData.list" style="width: 100%">
-            <el-table-column prop="id" label="#" width="70"></el-table-column>
-            <el-table-column prop="name" label="表决主题" width="180"></el-table-column>
-            <el-table-column prop="phone" label="表决类型" width="140"></el-table-column>
-            <el-table-column prop="email" label="表决项" width="180"></el-table-column>
+            <el-table-column prop="topic_id" label="#" width="70"></el-table-column>
+            <el-table-column prop="title" label="表决主题" width="180"></el-table-column>
+            <el-table-column label="表决类型" width="140">
+                <template slot-scope="scope">
+                    {{ scope.row.topic_type | topicType }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="email" label="表决项"></el-table-column>
         </el-table>
-
         <el-button type="primary" size="small" class="mar-top15" @click="addEditorData(0, 'add')">新增会议表决</el-button>
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
-            <el-form ref="form" :model="form" label-width="80px" class="content-form">
+            <el-form ref="form" :model="form" label-width="95px" class="content-form">
                 <el-form-item label="表决主题">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="表决类型">
-                    <el-select v-model="form.b" placeholder="选择表决类型" filterable>
-                        <el-option label="表决类型1" :value="0"></el-option>
+                    <el-select v-model="form.topic_type" placeholder="选择表决类型" filterable>
+                        <el-option label="标准表决 1" :value="1"></el-option>
+                        <el-option label="标准表决 2" :value="2"></el-option>
+                        <el-option label="自定义表决" :value="3"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="自定义表决" v-if="form.topic_type == '3'">
+                    <el-input v-model="form.topic_items"></el-input>
+                </el-form-item>
                 <el-form-item label=" ">
-                    <el-button type="primary" size="small">提交保存</el-button>
+                    <el-button type="primary" size="small" @click="submitEditor('form')">提交保存</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -34,7 +42,8 @@ export default {
             dialogVisible: false,
             form: {
                 title: '',
-                agenda_code: '',
+                topic_type: '',
+                topic_items: ''
             },
             moduleData: {
                 list: []
@@ -51,7 +60,7 @@ export default {
     methods: {
         getModuleData() {
             // conference_id
-            this.$api.apiCommunication('/Meeting/getAgendaList', { conference_id: this.meetingId }, response => {
+            this.$api.apiCommunication('/Meeting/getVoteList', { conference_id: this.meetingId }, response => {
                 if (response.status === 200) {
                     this.moduleData.list = response.data.list ? response.data.list : []
                 } else {
@@ -64,11 +73,9 @@ export default {
                 // this.form.config_id = val.row.config_id
             } else {
                 this.form = {
-                    agenda_code: '',
                     title: '',
-                    start_time: '',
-                    end_time: '',
-                    hostess_id: ''
+                    topic_type: '',
+                    topic_items: ''
                 }
             }
             this.marked = type
@@ -81,12 +88,15 @@ export default {
                             conference_id: this.meetingId,
                             status: 1
                         },
-                        apiname = this.marked === 'add' ? '/Meeting/createAgenda' : '/Meeting/updateAgenda'
+                        apiname = this.marked === 'add' ? '/Meeting/createVote' : '/Meeting/updateAgenda'
                     Object.assign(param, this.form)
+                    if(param.topic_type != 3){
+                        delete param.topic_items
+                    }
                     this.$api.apiCommunication(apiname, param, response => {
                         this.dialogVisible = false
                         if (response.status === 200) {
-                            this.$notify({ title: '系统通知', message: '新增会议议程成功', type: 'success' })
+                            this.$notify({ title: '系统通知', message: '新增成功', type: 'success' })
                             this.getModuleData()
                         } else {
                             this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
@@ -105,11 +115,6 @@ export default {
                     this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                 }
             })
-        }
-    },
-    filters: {
-        configType(val) {
-            return val === 1 ? '服务' : '功能'
         }
     }
 }

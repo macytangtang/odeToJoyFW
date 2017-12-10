@@ -49,12 +49,8 @@
                                 <el-input v-model="a" placeholder="收件人：" class="mar-bottom20"></el-input>
                                 <el-input v-model="a" placeholder="主题：" class="mar-bottom20"></el-input>
                                 <el-input v-model="a" placeholder="内容：" type="textarea" :rows="8" class="mar-bottom20"></el-input>
-                                <el-upload class="mar-bottom20" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
-                                    <el-button slot="trigger" size="mini" type="warning">选取文件</el-button>
-                                    <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
-                                    <div slot="tip" class="el-upload__tip">上传的附件不能超过32mb</div>
-                                </el-upload>
-                                <el-button type="primary" size="small">发送</el-button>
+                                <feng-file-upload text="点击上传" url="/Upload/filesUpload" @increment="handleAvatarScucess"></feng-file-upload><br>
+                                <el-button type="primary" size="small" class="mar-top15">发送</el-button>
                             </div>
                         </el-card>
                     </el-col>
@@ -65,6 +61,8 @@
 </template>
 
 <script>
+import fengFileUpload from '@/components/fengModule/fileUpload.vue'
+
 export default {
     data () {
         return {
@@ -88,6 +86,9 @@ export default {
         handlePreview(file) {
             console.log(file)
         }
+    },
+    components: {
+        fengFileUpload
     }
 }
 </script>

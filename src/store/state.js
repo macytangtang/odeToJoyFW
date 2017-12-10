@@ -5,8 +5,8 @@ const state = {
     userName: '',
     userInfo: null,
     addMeetingNum: {
-        pane: 'file',
-        meetingId: 5
+        pane: 'info',
+        meetingId: ''
     }
 }
 

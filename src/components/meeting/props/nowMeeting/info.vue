@@ -1,81 +1,182 @@
 <template>
-    <el-form ref="form" :model="form" label-width="95px" class="content-form">
+    <el-form ref="form" :model="form" label-width="95px" class="content-form" style="width: 100%;">
         <el-form-item label="会议名称">
-            <el-input v-model="form.a"></el-input>
+            <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-form-item label=" ">
-            <el-checkbox v-model="checked">保密会议</el-checkbox>（会议结束后自动系统将删除会议相关材料）
+            <el-checkbox v-model="form.is_secrecy">保密会议</el-checkbox>（会议结束后自动系统将删除会议相关材料）
         </el-form-item>
         <el-form-item label="会议室">
-            <el-select v-model="form.b" placeholder="选择权限" filterable>
-                <el-option label="管理员" :value="0"></el-option>
-                <el-option label="督导员" :value="1"></el-option>
-                <el-option label="秘书" :value="2"></el-option>
-                <el-option label="其他" :value="3"></el-option>
+            <el-select v-model="form.rooms" placeholder="选择会议室" multiple filterable>
+                <el-option :label="item.title" :value="item.room_id" :key="item.room_id" v-for="item in meetingRoom"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="开始时间">
-            <el-input v-model="form.c"></el-input>
+            <el-date-picker v-model="form.start_time" type="datetime" placeholder="选择开始时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
         </el-form-item>
         <el-form-item label="结束时间">
-            <el-input v-model="form.d"></el-input>
+            <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
         </el-form-item>
         <el-form-item label="参会人数">
-            <el-input v-model="form.e"></el-input>
+            <el-input v-model="form.conferee_num"></el-input>
         </el-form-item>
         <el-form-item label="会议秘书">
-            <el-input v-model="form.f"></el-input>
+            <el-input v-model="form.clerk_id"></el-input>
         </el-form-item>
         <el-form-item label="申请部门">
-            <el-input v-model="form.f"></el-input>
+            <el-input v-model="form.department"></el-input>
         </el-form-item>
         <el-form-item label="服务提供">
-            <el-checkbox-group v-model="form.f">
-                <el-checkbox label="茶水"></el-checkbox>
-                <el-checkbox label="咖啡"></el-checkbox>
-                <el-checkbox label="保洁"></el-checkbox>
-                <el-checkbox label="纸笔"></el-checkbox>
+            <el-checkbox-group v-model="form.services">
+                <el-checkbox :label="item.config_id" :key="item.config_id" v-for="item in roomsConfigListService">{{ item.title }}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="功能需求">
-            <el-checkbox-group v-model="form.f">
-                <el-checkbox label="议程查看"></el-checkbox>
-                <el-checkbox label="文件浏览"></el-checkbox>
-                <el-checkbox label="批注文件"></el-checkbox>
-                <el-checkbox label="投票表决"></el-checkbox>
-                <el-checkbox label="服务呼叫"></el-checkbox>
-                <el-checkbox label="同屏请求"></el-checkbox>
-                <el-checkbox label="电子白板"></el-checkbox>
-                <el-checkbox label="投影请求"></el-checkbox>
-                <el-checkbox label="聊天室"></el-checkbox>
-                <el-checkbox label="视频录播"></el-checkbox>
+            <el-checkbox-group v-model="form.functions">
+                <el-checkbox :label="item.config_id" :key="item.config_id" v-for="item in roomsConfigListFunctions">{{ item.title }}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="备注">
-            <el-input v-model="form.f"></el-input>
+            <el-input v-model="form.description"></el-input>
         </el-form-item>
         <el-form-item label=" ">
-            <el-button type="primary" size="small">提交信息</el-button>
-            <el-button type="success" size="small">刷新信息</el-button>
+            <el-button type="primary" size="small" @click="submit('form')">提交信息</el-button>
         </el-form-item>
     </el-form>
 </template>
 <script>
-// 当前会议 => 基本信息
+// 会议列表 => 查看会议 => 基本信息
 export default {
-    props: ['nowMeeting'],
+    props: ['meetingId'],
     data() {
         return {
-            checked: true,
+            checked: false,
             form: {
-                a: '',
-                b: 0,
-                c: '',
-                d: '',
-                e: '',
-                f: ''
+                title: '',
+                is_secrecy: false,
+                rooms: [],
+                start_time: '',
+                end_time: '',
+                conferee_num: '',
+                clerk_id: '',
+                department: '',
+                services: [],
+                functions: [],
+                description: ''
+            },
+            meetingRoom: [],
+            roomsConfigList: []
+        }
+    },
+    created() {
+        this.getModuleData()
+        this.getMeetingRoom()
+        this.getRoomsConfigList()
+    },
+    computed: {
+        roomsConfigListService() {
+            let _arr = []
+            for (let item of this.roomsConfigList) {
+                if(item.config_type === 1){
+                    _arr.push(item)
+                }
             }
+            return _arr
+        },
+        roomsConfigListFunctions() {
+            let _arr = []
+            for (let item of this.roomsConfigList) {
+                if(item.config_type === 2){
+                    _arr.push(item)
+                }
+            }
+            return _arr
+        }
+    },
+    methods: {
+        getModuleData() {
+            this.$api.apiCommunication('/Meeting/getMeetingInfo', { conference_id: this.meetingId }, response => {
+                if (response.status === 200) {
+                    let _data = response.data
+                    this.form.title = _data.title
+                    this.form.is_secrecy = _data.is_secrecy == 1 ? true : false
+                    this.form.start_time = new Date(_data.start_time)
+                    this.form.end_time = new Date(_data.end_time)
+                    this.form.conferee_num = _data.conferee_num
+                    this.form.clerk_id = _data.clerk_id
+                    this.form.department = _data.department
+                    this.form.description = _data.description
+                    this.form.services = JSON.parse('[' + String(_data.services.split(',')) + ']')
+                    this.form.functions = JSON.parse('[' + String(_data.functions.split(',')) + ']')
+                    this.form.rooms = JSON.parse('[' + String(_data.rooms.split(',')) + ']')
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        getMeetingRoom() {
+            this.$api.apiCommunication('/Rooms/getRoomsList', {}, response => {
+                if (response.status === 200) {
+                    if(response.data !== []) {
+                        this.meetingRoom = response.data.list
+                    } else {
+                        this.meetingRoom = []
+                    }
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        getRoomsConfigList() {
+            this.$api.apiCommunication('/Rooms/getRoomsConfigList', {}, response => {
+                if (response.status === 200) {
+                    if(response.data !== []) {
+                        this.roomsConfigList = response.data.list
+                    } else {
+                        this.roomsConfigList = []
+                    }
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        submit(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let param = {
+                        status: 1
+                    }
+                    Object.assign(param, this.form)
+                    param.services = param.services.join(',')
+                    param.functions = param.functions.join(',')
+                    param.is_secrecy = param.is_secrecy ? 1 : 0
+                    param.rooms = param.rooms.join(',')
+                    this.$api.apiCommunication('/Meeting/createMeeting', param, response => {
+                        if (response.status === 200) {
+                            this.$notify({ title: '系统通知', message: '新增会议成功', type: 'success' })
+                            let param = {
+                                type: 'save',
+                                data: {
+                                    pane: 'agenda',
+                                    meetingId: response.data
+                                }
+                            }
+                            this.$store.dispatch('addMeetingNum', param)
+                        } else {
+                            this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                        }
+                    })
+                } else {
+                    this.$notify({ title: '系统通知', message: '必填的字段不能为空或数据格式错误，请检查填写后重新提交', type: 'error' })
+                }
+            })
         }
     }
 }
 </script>
+<style >
+    .el-checkbox {
+        margin-left: 0!important;
+        margin-right: 30px;
+    }
+</style>

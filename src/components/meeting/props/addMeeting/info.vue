@@ -1,5 +1,5 @@
 <template>
-    <el-form ref="form" :model="form" label-width="95px" class="content-form">
+    <el-form ref="form" :model="form" label-width="95px" class="content-form" style="width: 100%;">
         <el-form-item label="会议名称">
             <el-input v-model="form.title"></el-input>
         </el-form-item>
@@ -154,3 +154,9 @@ export default {
     }
 }
 </script>
+<style >
+    .el-checkbox {
+        margin-left: 0!important;
+        margin-right: 30px;
+    }
+</style>

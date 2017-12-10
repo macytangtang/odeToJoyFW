@@ -8,7 +8,11 @@
                     <el-table-column prop="name" label="姓名" width="100"></el-table-column>
                     <el-table-column prop="mobile" label="电话" width="140"></el-table-column>
                     <el-table-column prop="email" label="邮箱" width="180" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="password" label="密码" width="130"></el-table-column>
+                    <el-table-column label="权限" width="130">
+                        <template slot-scope="scope">
+                            {{ scope.row.auth | authStatus }}
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="description" label="备注" width="130" show-overflow-tooltip></el-table-column>
                     <el-table-column label="操作" min-width="180">
                         <template slot-scope="scope">
@@ -81,7 +85,7 @@ export default {
         getModuleData() {
             this.$api.apiCommunication('/User/getUserList', {}, response => {
                 if (response.status === 200) {
-                    this.moduleData.list = response.data.list
+                    this.moduleData.list = response.data.list ? response.data.list : []
                 } else {
                     this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                 }

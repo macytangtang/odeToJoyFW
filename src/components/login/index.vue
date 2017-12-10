@@ -1,16 +1,16 @@
 <template>
     <div id="login">
-        <!-- <div class="login-header">
+        <div class="login-header">
             <div class="header-logo">
-                <h1>
+                <!-- <h1>
                     <a href="">
                         logo
                         <img src="../../static/img/logo.png" alt="方圆智汇">
                     </a>
-                </h1>
-                <div class="header-title">方圆智汇</div>
+                </h1> -->
+                <div class="header-title">欢迎使用方圆智汇无纸化会议管理系统</div>
             </div>
-        </div> -->
+        </div>
         <div class="login-content">
             <div class="content-wrap">
                 <div class="form-wrap">

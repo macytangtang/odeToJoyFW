@@ -1,12 +1,17 @@
 <template>
     <div>
-        <h1 class="wrap-title mar-bottom15">会议室列表 > 坐席设置<el-button type="primary" @click="addEditorData(0, 'add')" size="mini" class="bread-addbtn">新增坐席</el-button></h1>
+        <h1 class="wrap-title mar-bottom15">
+            <span>会议室列表 > 坐席设置</span>
+            <el-button type="primary" @click="addEditorData(0, 'add')" size="mini" class="bread-addbtn">新增坐席</el-button>
+            <feng-excel-upload text="导入坐席" url="/Upload/excelUpload" @increment="responesData" :params="excelParams"></feng-excel-upload>
+        </h1>
         <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
                 <el-table :data="moduleData.list" style="width: 100%">
                     <el-table-column prop="seat_id" label="#" width="70"></el-table-column>
                     <el-table-column prop="seat_code" label="坐席编号" width="150" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="seat_ip" label="ip地址" width="140"></el-table-column>
+                    <el-table-column prop="coordinate" label="坐标" width="140"></el-table-column>
                     <el-table-column label="操作" min-width="180">
                         <template slot-scope="scope">
                             <el-button type="primary" @click="addEditorData(scope, 'editor')" size="small">编辑</el-button>
@@ -17,7 +22,7 @@
         </el-row>
         <el-row class="mar-bottom10">
             <el-col :span="24" class="el-item pdd-10">
-                会议室布局图
+                <p class="mar-bottom10">会议室布局图</p>
                 <img :src="imgMap" class="meeting-imgmap">
             </el-col>
         </el-row>
@@ -28,6 +33,9 @@
                 </el-form-item>
                 <el-form-item label="ip地址">
                     <el-input v-model="form.seat_ip"></el-input>
+                </el-form-item>
+                <el-form-item label="坐标">
+                    <el-input v-model="form.coordinate"></el-input>
                 </el-form-item>
                 <el-form-item label=" ">
                     <el-button type="primary" size="small" @click="submitEditor('form')">提交保存</el-button>
@@ -40,6 +48,8 @@
 <script>
 // 会议室管理 => 坐席设置
 import '@/static/style/meeting/index.scss'
+import fengExcelUpload from '@/components/fengModule/excelUpload.vue'
+
 
 export default {
     props: ['id'],
@@ -49,11 +59,15 @@ export default {
             dialogVisible: false,
             form: {
                 seat_code: '',
-                seat_ip: ''
+                seat_ip: '',
+                coordinate: ''
             },
             imgMap: '',
             moduleData: {
                 list: []
+            },
+            excelParams: {
+                room_id: this.id
             }
         }
     },
@@ -96,11 +110,22 @@ export default {
             } else {
                 this.form = {
                     seat_code: '',
-                    seat_ip: ''
+                    seat_ip: '',
+                    coordinate: ''
                 }
             }
             this.marked = type
             this.dialogVisible = true
+        },
+        responesData(response) {
+            // 批量导入excel完成回调
+            if(response.status === 200){
+                // 导入成功，重新获取列表
+                this.$notify({ title: '系统通知', message: '批量导入成功！', type: 'success' })
+                this.getModuleData()
+                return false
+            }
+            this.$alert(`服务器返回了一个没有预置的状态，无法执行下一步操作，请联系管理员。服务器返回信息：${response.msg}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
         },
         submitEditor(formName) {
             this.$refs[formName].validate((valid) => {
@@ -129,6 +154,9 @@ export default {
                 }
             })
         }
+    },
+    components: {
+        fengExcelUpload
     }
 }
 </script>

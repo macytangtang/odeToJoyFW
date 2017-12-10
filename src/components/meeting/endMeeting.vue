@@ -5,35 +5,34 @@
             <el-col :span="24" class="el-item pdd-10">
                 <el-form ref="form" :model="form" label-width="95px" class="content-form">
                     <el-form-item label="已结束会议" class="mar-bottom0">
-                        <el-select v-model="form.a" placeholder="选择已结束会议" filterable>
-                            <el-option label="已结束会议1" :value="0"></el-option>
-                            <el-option label="已结束会议2" :value="1"></el-option>
+                        <el-select v-model="form.meeting" placeholder="选择已结束会议" filterable @change="meetingChange">
+                            <el-option :label="item.title" :value="item.conference_id" :key="item.conference_id" v-for="item in endMeetingList"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
-        <el-tabs :value="activeName" type="border-card">
+        <el-tabs value="info" type="border-card" v-if="meetingId">
             <el-tab-pane label="基本信息" name="info">
-                <meeting-info></meeting-info>
+                <meeting-info :meetingId="meetingId"></meeting-info>
             </el-tab-pane>
             <el-tab-pane label="会议议程" name="agenda">
-                <meeting-agenda></meeting-agenda>
+                <meeting-agenda :meetingId="meetingId"></meeting-agenda>
             </el-tab-pane>
             <el-tab-pane label="会议文件" name="file">
-                <meeting-file></meeting-file>
+                <meeting-file :meetingId="meetingId"></meeting-file>
             </el-tab-pane>
             <el-tab-pane label="参会人" name="people">
-                <meeting-people></meeting-people>
+                <meeting-people :meetingId="meetingId"></meeting-people>
             </el-tab-pane>
             <el-tab-pane label="签到情况" name="signIn">
-                <meeting-signIn></meeting-signIn>
+                <meeting-signIn :meetingId="meetingId"></meeting-signIn>
             </el-tab-pane>
             <el-tab-pane label="投票结果" name="voteResult">
-                <meeting-vote-result></meeting-vote-result>
+                <meeting-vote-result :meetingId="meetingId"></meeting-vote-result>
             </el-tab-pane>
             <el-tab-pane label="批注文件" name="annotation">
-                <meeting-annotation></meeting-annotation>
+                <meeting-annotation :meetingId="meetingId"></meeting-annotation>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -52,9 +51,27 @@ export default {
     data () {
         return {
             form: {
-                a: ''
+                meeting: ''
             },
-            activeName: 'info'
+            endMeetingList: [],
+            meetingId: ''
+        }
+    },
+    created() {
+        this.getModuleData()
+    },
+    methods: {
+        getModuleData() {
+            this.$api.apiCommunication('/Meeting/getMeetingList', { status: 3 }, response => {
+                if (response.status === 200) {
+                    this.endMeetingList = response.data.list ? response.data.list : []
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        meetingChange(val) {
+            this.meetingId = val
         }
     },
     components: {

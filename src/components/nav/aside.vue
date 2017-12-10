@@ -3,8 +3,8 @@
         <!-- <i class="iconfont icon-home"></i> -->
         <el-menu :default-active="defaultElmenu" :unique-opened="true" mode="vertical" :router="true" background-color="#4549B1" text-color="#fff" active-text-color="#F0A74E">
             <el-menu-item index="/">
-                <i class="el-icon-setting"></i>
-                <!-- <i class="iconfont icon-home"></i> -->
+                <!-- <i class="el-icon-setting"></i> -->
+                <i class="iconfont icon-v1"></i>
                 <span slot="title">我的主页</span>
             </el-menu-item>
             <el-submenu index="2">
@@ -18,7 +18,7 @@
             </el-submenu>
             <el-submenu index="3">
                 <template slot="title">
-                    <i class="el-icon-setting"></i>
+                    <i class="iconfont icon-huiyishi"></i>
                     <span>会议室管理</span>
                 </template>
                 <el-menu-item index="/meetingroomSetting">会议室设置</el-menu-item>
@@ -26,7 +26,7 @@
             </el-submenu>
             <el-submenu index="4">
                 <template slot="title">
-                    <i class="el-icon-setting"></i>
+                    <i class="iconfont icon-huiyi"></i>
                     <span>会议管理</span>
                 </template>
                 <el-menu-item index="/addMeeting">新增会议</el-menu-item>
@@ -56,8 +56,7 @@ export default {
     data () {
         return {
             isCollapse: true,
-            defaultElmenu: this.$route.path,
-            abc: ['asssssss']
+            defaultElmenu: this.$route.path
         }
     },
     computed: {

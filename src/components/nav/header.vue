@@ -1,6 +1,8 @@
 <template>
     <div class="header-wrap">
-        <el-button type="text" class="toggle-aside" @click="switchAside"><i class="iconfont icon-menu"></i></el-button>
+        <el-button type="text" class="toggle-aside" @click="switchAside">
+            <img src="../../static/images/logo.png" alt="">
+        </el-button>
         <div class="header-logo">
             <h1>方圆智汇</h1>
             <p>无纸化会议系统</p>

@@ -42,6 +42,24 @@ exports.install = (Vue, options) => {
         }
         return _val
     })
+    // 表决类型过滤器
+    Vue.filter('topicType', value => {
+        let _val = ''
+        switch (Number(value)) {
+            case 1:
+                _val = '标准表决 1'
+                break
+            case 2:
+                _val = '标准表决 2'
+                break
+            case 3:
+                _val = '自定义表决'
+                break
+            default:
+                _val = '未知类型'
+        }
+        return _val
+    })
     // 保留两位小数过滤器
     Vue.filter('toFixed', value => {
         if(value === -Infinity) {

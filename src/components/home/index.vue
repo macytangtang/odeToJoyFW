@@ -5,7 +5,7 @@
             <el-tab-pane label="基本信息" name="info">
                 <el-form ref="form" :model="form" label-width="80px" class="content-form">
                     <el-form-item label="姓名">
-                        <el-input v-model="form.name" disabled></el-input>
+                        <el-input v-model="form.name"></el-input>
                     </el-form-item>
                     <el-form-item label="权限">
                         <el-select v-model="form.auth" placeholder="选择权限" disabled filterable>
@@ -16,19 +16,19 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="电话">
-                        <el-input v-model="form.mobile" disabled></el-input>
+                        <el-input v-model="form.mobile"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱">
-                        <el-input v-model="form.email" disabled></el-input>
+                        <el-input v-model="form.email"></el-input>
                     </el-form-item>
                     <el-form-item label="密码">
-                        <el-input v-model="form.password" disabled></el-input>
+                        <el-input v-model="form.password" type="password"></el-input>
                     </el-form-item>
                     <el-form-item label="备注">
-                        <el-input v-model="form.description" disabled></el-input>
+                        <el-input v-model="form.description"></el-input>
                     </el-form-item>
                     <el-form-item label=" ">
-                        <!-- <el-button type="primary" size="small" @click="refresh">刷新信息</el-button> -->
+                        <el-button type="primary" size="small" @click="submit('form')">提交信息</el-button>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -64,12 +64,12 @@ export default {
         return {
             activeName: 'info',
             form: {
-                // name: '',
-                // auth: 1,
-                // mobile: '',
-                // email: '',
-                // password: '',
-                // description: ''
+                name: '',
+                auth: 0,
+                mobile: '',
+                email: '',
+                password: '',
+                description: ''
             },
             moduleData: {
                 list: []
@@ -87,13 +87,19 @@ export default {
     methods: {
         getModuleData() {
             if(this.userInfo){
-                this.form = this.userInfo
+                let _data = {}
+                Object.assign(_data, this.userInfo)
+                this.form = _data
+                this.form.password = ""
                 return false
             }
             this.$api.apiCommunication('/User/getUserInfo', { user_id: this.userId }, response => {
                 if (response.status === 200) {
-                    this.form = response.data
-                    this.$store.dispatch('saveUserInfo', response.data)
+                    let param = {}
+                    Object.assign(param, response.data)
+                    param.password = ""
+                    this.form = param
+                    this.$store.dispatch('saveUserInfo', param)
                 } else {
                     this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                 }
@@ -108,8 +114,29 @@ export default {
                 }
             })
         },
-        refresh() {
-            this.getModuleData()
+        submit(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let param = {
+                        status: 1
+                    }
+                    Object.assign(param, this.form)
+                    delete param.update_time
+                    delete param.create_time
+                    console.log(param)
+                    // return false
+                    this.$api.apiCommunication('/User/updateUser', param, response => {
+                        if (response.status === 200) {
+                            this.$notify({ title: '系统通知', message: '保存信息成功', type: 'success' })
+                            this.$store.dispatch('saveUserInfo', null)
+                        } else {
+                            this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                        }
+                    })
+                } else {
+                    this.$notify({ title: '系统通知', message: '必填的字段不能为空或数据格式错误，请检查填写后重新提交', type: 'error' })
+                }
+            })
         }
     },
     filters: {

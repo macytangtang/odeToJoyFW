@@ -1,14 +1,16 @@
 <template>
     <div>
-        <el-upload :action="actionUrl" :show-file-list="false" :on-success="handleAvatarScucess" :on-error="handleAvatarError" :before-upload="beforeAvatarUpload">
+        <el-upload :action="actionUrl" :show-file-list="false" :data="requestData" :on-success="handleAvatarScucess" :on-error="handleAvatarError" :before-upload="beforeAvatarUpload">
             <el-button size="mini" type="warning">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip" v-if="imageUrl">{{ imageUrl }}</div>
+            <!-- <div slot="tip" class="el-upload__tip" v-if="imageUrl">{{ imageUrl }}</div> -->
         </el-upload>
         <template v-if="imageUrl">
+            <img style="width: 150px;" :src="imageUrl" alt="获取图片失败">
+            <!--
             <el-popover ref="popoverimg" placement="right" width="350" trigger="click">
                 <img width="100%" :src="imageUrl" alt="获取图片失败">
             </el-popover>
-            <el-button size="mini" type="primary" v-popover:popoverimg>查看布局</el-button>
+            <el-button size="mini" type="primary" v-popover:popoverimg>查看图片</el-button> -->
         </template>
     </div>
 </template>
@@ -22,11 +24,24 @@ import '@/static/style/fengModule/imageUpload.scss'
 import { basicConfig } from '@/config/'
 
 export default {
-    props: ['imageUrl'],
+    props: {
+        imageUrl: {
+            type: String
+        },
+        params: {
+            type: Object,
+            default: {}
+        }
+    },
     data() {
         return {
             actionUrl: `${basicConfig.API_HOST}/Upload/imgUpload`,
             dialogVisible: false
+        }
+    },
+    computed: {
+        requestData() {
+            return Object.assign({ token: this.$store.getters.getToken }, this.params)
         }
     },
     methods: {

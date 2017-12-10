@@ -9,7 +9,14 @@
                     <el-table-column prop="location" label="位置" width="140"></el-table-column>
                     <el-table-column prop="seats_num" label="坐席数" width="100" ></el-table-column>
                     <el-table-column prop="manager_id" label="负责人" width="100"></el-table-column>
-                    <el-table-column prop="img_map" label="布局" width="130"></el-table-column>
+                    <el-table-column prop="img_map" label="布局" width="130">
+                        <template slot-scope="scope">
+                            <el-popover width="350" trigger="click">
+                                <img width="100%" :src="scope.row.img_map" alt="获取图片失败">
+                                 <el-button size="mini" type="info" slot="reference">查看布局</el-button>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="状态" width="90">
                         <template slot-scope="scope">
                             {{ scope.row.status | meetingroomStatus }}

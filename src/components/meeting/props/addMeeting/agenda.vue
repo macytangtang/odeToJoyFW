@@ -23,7 +23,9 @@
                     <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束时间" :editable="false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="主持人">
-                    <el-input v-model="form.hostess_id"></el-input>
+                    <el-select v-model="form.hostess_id" placeholder="选择主持人" filterable>
+                        <el-option :label="item.name" :value="item.user_id" :key="item.user_id" v-for="item in userList"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label=" ">
                     <el-button type="primary" size="small" @click="submitEditor('form')">提交保存</el-button>
@@ -49,11 +51,13 @@ export default {
             moduleData: {
                 list: []
             },
+            userList: [],
             meetingId: this.$store.getters.addMeetingNum.meetingId
         }
     },
     created() {
         this.getModuleData()
+        this.getUserList()
     },
     computed: {
         dialogTitle() { return this.marked === 'add' ? '新增议程' : '编辑议程' }
@@ -63,6 +67,15 @@ export default {
             this.$api.apiCommunication('/Meeting/getAgendaList', { conference_id: this.meetingId }, response => {
                 if (response.status === 200) {
                     this.moduleData.list = response.data.list ? response.data.list : []
+                } else {
+                    this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                }
+            })
+        },
+        getUserList() {
+            this.$api.apiCommunication('/User/getUserList', {}, response => {
+                if (response.status === 200) {
+                    this.userList = response.data.list ? response.data.list : []
                 } else {
                     this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                 }
@@ -114,11 +127,6 @@ export default {
                     this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
                 }
             })
-        }
-    },
-    filters: {
-        configType(val) {
-            return val === 1 ? '服务' : '功能'
         }
     }
 }

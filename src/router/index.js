@@ -10,6 +10,7 @@ import seatSetting from '@/components/meeting/seatSetting.vue'
 import addMeeting from '@/components/meeting/addMeeting.vue'
 import nowMeeting from '@/components/meeting/nowMeeting.vue'
 import endMeeting from '@/components/meeting/endMeeting.vue'
+import editorMeeting from '@/components/meeting/editorMeeting.vue'
 import notfound from '@/components/fengModule/notfound.vue'
 import login from '@/components/login'
 
@@ -66,6 +67,12 @@ const routes = [
         name: 'endMeeting',
         path: '/endMeeting',
         component: endMeeting
+    },
+    {
+        name: 'editorMeeting',
+        path: '/editorMeeting/:id',
+        props: true,
+        component: editorMeeting
     },
     {
         name: 'notfound',

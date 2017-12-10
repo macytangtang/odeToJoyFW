@@ -5,53 +5,25 @@
             <el-col :span="24" class="el-item pdd-10">
                 <!-- <div class="">会议列表</div> -->
                 <el-table :data="moduleData.list" style="width: 100%">
-                    <el-table-column type="index" width="50"></el-table-column>
+                    <el-table-column prop="conference_id" label="#" width="50"></el-table-column>
                     <el-table-column prop="title" label="会议名称" width="250" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="status" label="会议状态" width="100"></el-table-column>
+                    <el-table-column prop="status_name" label="会议状态" width="100"></el-table-column>
                     <el-table-column label="运行" min-width="180">
                         <template slot-scope="scope">
-                            <el-button type="primary" @click="checkMeeting(scope)" size="small">查看会议</el-button>
-                            <el-button type="danger" @click="startMeeting(scope)" size="small">开始会议</el-button>
+                            <el-button type="primary" @click="checkMeeting(scope)" size="small" v-if="scope.row.status != '3'">查看会议</el-button>
+                            <el-button type="danger" @click="startEndMeeting(scope, 'start')" size="small" v-if="scope.row.status == '1'">开始会议</el-button>
+                            <el-button type="danger" @click="startEndMeeting(scope, 'end')" size="small" v-if="scope.row.status == '2'">结束会议</el-button>
+                            <el-button type="danger" @click="produceNotes(scope)" size="small" v-if="scope.row.status == '3'">生成会议纪要</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </el-col>
         </el-row>
-        <el-tabs :value="activeName" type="border-card" v-if="nowMeeting != ''">
-            <el-tab-pane label="基本信息" name="info">
-                <meeting-info :nowMeeting="nowMeeting"></meeting-info>
-            </el-tab-pane>
-            <el-tab-pane label="会议议程" name="agenda">
-                <meeting-agenda :nowMeeting="nowMeeting"></meeting-agenda>
-            </el-tab-pane>
-            <el-tab-pane label="会议文件" name="file">
-                <meeting-file :nowMeeting="nowMeeting"></meeting-file>
-            </el-tab-pane>
-            <el-tab-pane label="会议表决" name="vote">
-                <meeting-vote :nowMeeting="nowMeeting"></meeting-vote>
-            </el-tab-pane>
-            <el-tab-pane label="参会人" name="people">
-                <meeting-people :nowMeeting="nowMeeting"></meeting-people>
-            </el-tab-pane>
-            <el-tab-pane label="签到情况" name="signIn">
-                <meeting-signIn :nowMeeting="nowMeeting"></meeting-signIn>
-            </el-tab-pane>
-            <el-tab-pane label="投票结果" name="voteResult">
-                <meeting-vote-result :nowMeeting="nowMeeting"></meeting-vote-result>
-            </el-tab-pane>
-        </el-tabs>
     </div>
 </template>
 
 <script>
-// 当前会议
-import meetingInfo from '@/components/meeting/props/nowMeeting/info.vue'
-import meetingAgenda from '@/components/meeting/props/nowMeeting/agenda.vue'
-import meetingFile from '@/components/meeting/props/nowMeeting/file.vue'
-import meetingVote from '@/components/meeting/props/nowMeeting/vote.vue'
-import meetingPeople from '@/components/meeting/props/nowMeeting/people.vue'
-import meetingSignIn from '@/components/meeting/props/nowMeeting/signIn.vue'
-import meetingVoteResult from '@/components/meeting/props/nowMeeting/voteResult.vue'
+// 会议列表
 export default {
     data () {
         return {
@@ -80,20 +52,35 @@ export default {
             })
         },
         checkMeeting(val) {
-            this.nowMeeting = val.row.conference_id
+            this.$router.push({ name: 'editorMeeting', params: { id: val.row.conference_id } })
         },
-        startMeeting(val) {
+        startEndMeeting(val, type) {
+            let _tips = type === 'start' ? '确定开始这个会议吗？' : '确定结束这个会议吗？',
+                param = {
+                    conference_id: val.row.conference_id,
+                    status: type === 'start' ? 2 : 3
+                }
+            this.$confirm(_tips, '系统通知', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$api.apiCommunication('/Meeting/endMeeting', param, response => {
+                    if (response.status === 200) {
+                        this.$notify({ title: '系统通知', message: '操作成功', type: 'success' })
+                        this.getMeetingList()
+                    } else {
+                        this.$alert(`获取数据失败，服务器返回信息：${response.data}`, '系统通知', { confirmButtonText: '确定', type: 'error' })
+                    }
+                })
+            }).catch(() => {
+                // 取消
+            })
+
+        },
+        produceNotes(val) {
 
         }
-    },
-    components: {
-        meetingInfo,
-        meetingAgenda,
-        meetingFile,
-        meetingVote,
-        meetingPeople,
-        meetingSignIn,
-        meetingVoteResult
     }
 }
 </script>
