@@ -4,7 +4,7 @@
             <img src="../../static/images/logo.png" alt="">
         </el-button>
         <div class="header-logo">
-            <h1>方圆智汇</h1>
+            <h1>北京方圆智汇电子科技有限公司</h1>
             <p>无纸化会议系统</p>
         </div>
 		<div class="toolbar-features">

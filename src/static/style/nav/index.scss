@@ -2,26 +2,36 @@
     height: 100%;
     .el-menu {
         height: 100%;
+        .el-menu-item {
+            font-size: 16px;
+        }
+        .el-submenu__title {
+            font-size: 16px;
+        }
     }
 }
 
 .header-wrap {
     position: relative;
     height: 80px;
-    background-color: #fff;
+    background-color: #5659B9;
     .toggle-aside {
         width: 80px;
         height: 80px;
         color: #646464;
         vertical-align: top;
         line-height: 0;
+        padding: 10px 0;
+        background: #fff;
+        border-radius: 0;
         img {
-            width: 54px;
+            width: 60px;
         }
     }
     .header-logo {
         display: inline-block;
-        width: 230px;
+        width: 350px;
+        // width: 230px;
         height: 80px;
         background-color: #5659B9;
         text-align: center;
@@ -31,6 +41,7 @@
             line-height: 65px;
         }
         p {
+            width: 230px;
             color: #fff;
             font-size: 12px;
             letter-spacing: 8px;

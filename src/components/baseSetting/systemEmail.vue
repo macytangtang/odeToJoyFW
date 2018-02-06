@@ -49,7 +49,7 @@
                                 <el-input v-model="a" placeholder="收件人：" class="mar-bottom20"></el-input>
                                 <el-input v-model="a" placeholder="主题：" class="mar-bottom20"></el-input>
                                 <el-input v-model="a" placeholder="内容：" type="textarea" :rows="8" class="mar-bottom20"></el-input>
-                                <feng-file-upload text="点击上传" url="/Upload/filesUpload" @increment="handleAvatarScucess"></feng-file-upload><br>
+                                <feng-file-upload text="附件上传" url="/Upload/filesUpload" @increment="handleAvatarScucess" :fileSize="50"></feng-file-upload><br>
                                 <el-button type="primary" size="small" class="mar-top15">发送</el-button>
                             </div>
                         </el-card>
@@ -85,6 +85,9 @@ export default {
         },
         handlePreview(file) {
             console.log(file)
+        },
+        handleAvatarScucess(val) {
+            console.log(val)
         }
     },
     components: {
